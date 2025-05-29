@@ -62,7 +62,7 @@ namespace ElectronicsShop.Pages
                 ShowErrorMessage("Пожалуйста, введите логин и пароль");
                 return;
             }
-
+               
             try
             {
                 // Поиск пользователя в базе данных
