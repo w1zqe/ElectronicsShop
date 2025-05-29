@@ -82,7 +82,7 @@ namespace ElectronicsShop.Pages
                     }
                     else // Обычный пользователь
                     {
-                        NavigationService.Navigate(new UserPage());
+                        NavigationService.Navigate(new ProductPage());
                     }
                 }
                 else

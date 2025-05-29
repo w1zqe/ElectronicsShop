@@ -11,7 +11,7 @@ namespace ElectronicsShop.AppData
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,7 +21,7 @@ namespace ElectronicsShop.AppData
             this.OrdersPodr = new HashSet<OrdersPodr>();
             this.Sale = new HashSet<Sale>();
         }
-    
+
         public int ID_Product { get; set; }
         public string Name { get; set; }
         public string Descript { get; set; }
@@ -31,7 +31,7 @@ namespace ElectronicsShop.AppData
         public string Image { get; set; }
         public int StockQ { get; set; }
         public int ID_Country { get; set; }
-    
+
         public virtual Brands Brands { get; set; }
         public virtual Category Category { get; set; }
         public virtual Country Country { get; set; }
@@ -41,5 +41,21 @@ namespace ElectronicsShop.AppData
         public virtual ICollection<OrdersPodr> OrdersPodr { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Sale> Sale { get; set; }
+
+
+        public string CurrentPhoto
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(Image) || String.IsNullOrEmpty(Image))
+                {
+                    return "/Images/picture.jpg";
+                }
+                else
+                {
+                    return "/Images/" + Image;
+                }
+            }
+        }
     }
 }

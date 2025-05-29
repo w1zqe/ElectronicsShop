@@ -17,7 +17,7 @@ namespace ElectronicsShop.Pages
             InitializeComponent();
         }
 
-        // Общие обработчики для TextBox
+        // Обработчики для TextBox
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (sender is TextBox textBox)
@@ -89,8 +89,61 @@ namespace ElectronicsShop.Pages
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Ваша логика регистрации...
+            string fullName = UserNameBox.Text.Trim();
+            string login = LoginBox.Text.Trim();
+            string password = PasswordBox.Password.Trim();
+            string confirmPassword = ConfirmPasswordBox.Password.Trim();
+            string phone = PhoneBox.Text.Trim();
+
+            // 1. Проверка на пустые поля
+            if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(login) ||
+                string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword) ||
+                string.IsNullOrEmpty(phone))
+            {
+                ShowErrorMessage("Заполните все поля.");
+                return;
+            }
+
+            // 2. Проверка на совпадение паролей
+            if (password != confirmPassword)
+            {
+                ShowErrorMessage("Пароли не совпадают.");
+                return;
+            }
+
+            // 3. Проверка формата телефона (простой шаблон)
+            if (!Regex.IsMatch(phone, @"^\+?\d{10,15}$"))
+            {
+                ShowErrorMessage("Введите корректный номер телефона.");
+                return;
+            }
+
+            // 4. Проверка уникальности логина
+            if (_context.Users.Any(u => u.Login == login))
+            {
+                ShowErrorMessage("Пользователь с таким логином уже существует.");
+                return;
+            }
+
+            // 5. Добавление нового пользователя
+            var newUser = new Users
+            {
+                UserName = fullName,
+                Login = login,
+                Password = password, // В проде — использовать хеширование!
+                Phone = phone,
+                Role_ID = 2 // Предположим, 2 — обычный пользователь. Уточни при необходимости.
+            };
+
+            _context.Users.Add(newUser);
+            _context.SaveChanges();
+
+            MessageBox.Show("Регистрация прошла успешно!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // Переход на LoginPage
+            NavigationService.Navigate(new LoginPage());
         }
+
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {

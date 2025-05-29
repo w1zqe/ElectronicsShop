@@ -16,12 +16,12 @@ using System.Windows.Shapes;
 
 namespace ElectronicsShop.Pages
 {
-    public partial class AdminPage : Page
+    public partial class ProductPage : Page
     {
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private List<Product> _products;
 
-        public AdminPage()
+        public ProductPage()
         {
             InitializeComponent();
             LoadData();
@@ -30,12 +30,8 @@ namespace ElectronicsShop.Pages
         private void LoadData()
         {
             _products = _context.Product.ToList();
-
-            var allCategories = _context.Category.ToList();
-            allCategories.Insert(0, new Category { ID_Category = 0, Name = "Все категории" });
-            CategoryBox.ItemsSource = allCategories;
-            CategoryBox.SelectedIndex = 0;
-
+            CategoryBox.ItemsSource = _context.Category.ToList();
+            CategoryBox.SelectedIndex = -1;
             SortBox.SelectedIndex = 0;
             ApplyFilters();
         }
@@ -48,7 +44,7 @@ namespace ElectronicsShop.Pages
             if (!string.IsNullOrWhiteSpace(search))
                 filtered = filtered.Where(p => p.Name.ToLower().Contains(search));
 
-            if (CategoryBox.SelectedItem is Category category && category.ID_Category != 0)
+            if (CategoryBox.SelectedItem is Category category)
                 filtered = filtered.Where(p => p.ID_Category == category.ID_Category);
 
             switch ((SortBox.SelectedItem as ComboBoxItem)?.Content.ToString())
@@ -69,27 +65,7 @@ namespace ElectronicsShop.Pages
         }
 
         private void Filter_Changed(object sender, SelectionChangedEventArgs e) => ApplyFilters();
+
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) => ApplyFilters();
-
-        private void ResetCategory_Click(object sender, RoutedEventArgs e)
-        {
-            CategoryBox.SelectedIndex = 0;
-            ApplyFilters();
-        }
-
-        private void AddProduct_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Добавить товар - функционал будет позже.");
-        }
-
-        private void EditProduct_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Редактировать выбранный товар - функционал будет позже.");
-        }
-
-        private void DeleteProduct_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Удалить выбранный товар - функционал будет позже.");
-        }
     }
 }
