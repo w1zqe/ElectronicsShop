@@ -42,8 +42,6 @@
             </ComboBox>
             <ComboBox x:Name="CategoryBox" Width="150" Height="30" DisplayMemberPath="Name"
                       SelectionChanged="Filter_Changed"/>
-            <Button Content="Все" Width="50" Height="30" Click="ResetCategory_Click" Background="#3A7CA5" Foreground="White"/>
-
             <Button Content="Добавить" Width="80" Height="30" Click="AddProduct_Click" Background="#4CAF50" Foreground="White"/>
             <Button Content="Редактировать" Width="100" Height="30" Click="EditProduct_Click" Background="#FFC107" Foreground="Black"/>
             <Button Content="Удалить" Width="80" Height="30" Click="DeleteProduct_Click" Background="#F44336" Foreground="White"/>

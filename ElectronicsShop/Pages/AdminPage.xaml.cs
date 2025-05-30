@@ -71,15 +71,9 @@ namespace ElectronicsShop.Pages
         private void Filter_Changed(object sender, SelectionChangedEventArgs e) => ApplyFilters();
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) => ApplyFilters();
 
-        private void ResetCategory_Click(object sender, RoutedEventArgs e)
-        {
-            CategoryBox.SelectedIndex = 0;
-            ApplyFilters();
-        }
-
         private void AddProduct_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Добавить товар - функционал будет позже.");
+            NavigationService.Navigate(new AddEditPage());
         }
 
         private void EditProduct_Click(object sender, RoutedEventArgs e)

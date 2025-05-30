@@ -1,0 +1,108 @@
+﻿<Page x:Class="ElectronicsShop.Pages.AddEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ElectronicsShop.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AddEditPage">
+
+    <Grid Background="#FFE6F2FF">
+        <Border Background="White" CornerRadius="20" Padding="30"
+                Width="600" VerticalAlignment="Center" HorizontalAlignment="Center"
+                BorderBrush="#FF3A7CA5" BorderThickness="2">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Заголовок -->
+                    <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold"
+                               Foreground="#2C5364" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                    <!-- Название товара -->
+                    <Grid Margin="0,0,0,10">
+                        <TextBox x:Name="NameBox" Height="35" FontSize="14" Padding="10,0" 
+                                 VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <TextBlock x:Name="NamePlaceholder" Text="Название товара"
+                                   FontSize="14" Foreground="Gray"
+                                   Margin="10,0,0,0" VerticalAlignment="Center"
+                                   IsHitTestVisible="False" Visibility="Visible"/>
+                    </Grid>
+
+                    <!-- Описание -->
+                    <Grid Margin="0,0,0,10">
+                        <TextBox x:Name="DescriptBox" Height="100" FontSize="14" Padding="10" 
+                                 VerticalContentAlignment="Top" TextWrapping="Wrap" AcceptsReturn="True"
+                                 TextChanged="TextBox_TextChanged"/>
+                        <TextBlock x:Name="DescriptPlaceholder" Text="Описание товара"
+                                   FontSize="14" Foreground="Gray"
+                                   Margin="10,8,0,0" VerticalAlignment="Top"
+                                   IsHitTestVisible="False" Visibility="Visible"/>
+                    </Grid>
+
+                    <!-- Цена -->
+                    <Grid Margin="0,0,0,10">
+                        <TextBox x:Name="PriceBox" Height="35" FontSize="14" Padding="10,0" 
+                                 VerticalContentAlignment="Center" PreviewTextInput="NumberValidationTextBox"
+                                 TextChanged="TextBox_TextChanged"/>
+                        <TextBlock x:Name="PricePlaceholder" Text="Цена"
+                                   FontSize="14" Foreground="Gray"
+                                   Margin="10,0,0,0" VerticalAlignment="Center"
+                                   IsHitTestVisible="False" Visibility="Visible"/>
+                    </Grid>
+
+                    <!-- Количество на складе -->
+                    <Grid Margin="0,0,0,10">
+                        <TextBox x:Name="StockQBox" Height="35" FontSize="14" Padding="10,0" 
+                                 VerticalContentAlignment="Center" PreviewTextInput="NumberValidationTextBox"
+                                 TextChanged="TextBox_TextChanged"/>
+                        <TextBlock x:Name="StockQPlaceholder" Text="Количество на складе"
+                                   FontSize="14" Foreground="Gray"
+                                   Margin="10,0,0,0" VerticalAlignment="Center"
+                                   IsHitTestVisible="False" Visibility="Visible"/>
+                    </Grid>
+
+                    <!-- Категория -->
+                    <ComboBox x:Name="CategoryComboBox" Margin="0,0,0,10" Height="35" FontSize="14" 
+                              DisplayMemberPath="Name" SelectedValuePath="ID_Category"
+                              SelectedValue="{Binding ID_Category}"/>
+
+                    <!-- Бренд -->
+                    <ComboBox x:Name="BrandComboBox" Margin="0,0,0,10" Height="35" FontSize="14" 
+                              DisplayMemberPath="Name" SelectedValuePath="ID_Brand"
+                              SelectedValue="{Binding ID_Brand}"/>
+
+                    <!-- Страна -->
+                    <ComboBox x:Name="CountryComboBox" Margin="0,0,0,10" Height="35" FontSize="14" 
+                              DisplayMemberPath="Name" SelectedValuePath="ID_Country"
+                              SelectedValue="{Binding ID_Country}"/>
+
+                    <!-- Изображение -->
+                    <Grid Margin="0,0,0,10">
+                        <TextBox x:Name="ImageBox" Height="35" FontSize="14" Padding="10,0" 
+                                 VerticalContentAlignment="Center" TextChanged="ImageBox_TextChanged"/>
+                        <TextBlock x:Name="ImagePlaceholder" Text="Имя файла изображения (например: product1.jpg)"
+                                   FontSize="14" Foreground="Gray"
+                                   Margin="10,0,0,0" VerticalAlignment="Center"
+                                   IsHitTestVisible="False" Visibility="Visible"/>
+                    </Grid>
+
+                    <!-- Кнопка Сохранить -->
+                    <Button Content="Сохранить" Height="35" Background="#3A7CA5"
+                            Foreground="White" FontWeight="SemiBold"
+                            Click="SaveButton_Click" Margin="0,0,0,10" />
+
+                    <!-- Кнопка Отмена -->
+                    <Button Content="Отмена" Height="30" Background="Transparent"
+                            BorderBrush="#3A7CA5" BorderThickness="1"
+                            Foreground="#3A7CA5" FontWeight="Normal"
+                            Click="CancelButton_Click"/>
+
+                    <!-- Сообщение об ошибке -->
+                    <TextBlock x:Name="ErrorMessage" Foreground="#FF6B6B" 
+                               TextWrapping="Wrap" Margin="0,10,0,0"
+                               Visibility="Collapsed"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>
