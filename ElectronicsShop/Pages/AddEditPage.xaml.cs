@@ -91,6 +91,18 @@ namespace ElectronicsShop.Pages
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            // Обновляем значения продукта из полей ввода
+            _currentProduct.Name = NameBox.Text;
+            _currentProduct.Descript = DescriptBox.Text;
+
+            if (decimal.TryParse(PriceBox.Text, out decimal price))
+                _currentProduct.Price = price;
+
+            if (int.TryParse(StockQBox.Text, out int stockQ))
+                _currentProduct.StockQ = stockQ;
+
+            _currentProduct.Image = ImageBox.Text;
+
             StringBuilder errors = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(_currentProduct.Name))
@@ -101,11 +113,11 @@ namespace ElectronicsShop.Pages
                 errors.AppendLine("Укажите цену товара");
             if (_currentProduct.StockQ < 0)
                 errors.AppendLine("Укажите корректное количество на складе");
-            if (_currentProduct.ID_Category == 0)
+            if (CategoryComboBox.SelectedItem == null)
                 errors.AppendLine("Выберите категорию");
-            if (_currentProduct.ID_Brand == 0)
+            if (BrandComboBox.SelectedItem == null)
                 errors.AppendLine("Выберите бренд");
-            if (_currentProduct.ID_Country == 0)
+            if (CountryComboBox.SelectedItem == null)
                 errors.AppendLine("Выберите страну");
 
             if (errors.Length > 0)
@@ -121,18 +133,7 @@ namespace ElectronicsShop.Pages
                 {
                     if (_isEdit)
                     {
-                        var productToUpdate = context.Product.Find(_currentProduct.ID_Product);
-                        if (productToUpdate != null)
-                        {
-                            productToUpdate.Name = _currentProduct.Name;
-                            productToUpdate.Descript = _currentProduct.Descript;
-                            productToUpdate.Price = _currentProduct.Price;
-                            productToUpdate.StockQ = _currentProduct.StockQ;
-                            productToUpdate.ID_Category = _currentProduct.ID_Category;
-                            productToUpdate.ID_Brand = _currentProduct.ID_Brand;
-                            productToUpdate.ID_Country = _currentProduct.ID_Country;
-                            productToUpdate.Image = _currentProduct.Image;
-                        }
+                        context.Entry(_currentProduct).State = System.Data.Entity.EntityState.Modified;
                     }
                     else
                     {
@@ -141,12 +142,12 @@ namespace ElectronicsShop.Pages
 
                     context.SaveChanges();
                     MessageBox.Show("Данные сохранены успешно!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    NavigationService.GoBack();
+                    NavigationService.Navigate(new AdminPage());
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при сохранении данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка при сохранении данных: {ex.InnerException?.Message ?? ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
