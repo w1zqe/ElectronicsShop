@@ -2,17 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ElectronicsShop.Pages
 {
@@ -20,11 +12,13 @@ namespace ElectronicsShop.Pages
     {
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private List<Product> _products;
+        private Product _selectedProduct;
 
         public AdminPage()
         {
             InitializeComponent();
             LoadData();
+            ProductList.SelectionChanged += ProductList_SelectionChanged;
         }
 
         private void LoadData()
@@ -66,6 +60,22 @@ namespace ElectronicsShop.Pages
 
             ProductList.ItemsSource = filtered.ToList();
             ProductCountText.Text = $"Найдено товаров: {filtered.Count()}";
+
+            // Обновляем состояние кнопок
+            UpdateButtonsState();
+        }
+
+        private void ProductList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _selectedProduct = ProductList.SelectedItem as Product;
+            UpdateButtonsState();
+        }
+
+        private void UpdateButtonsState()
+        {
+            bool isProductSelected = _selectedProduct != null;
+            EditProduct.IsEnabled = isProductSelected;
+            DeleteProduct.IsEnabled = isProductSelected;
         }
 
         private void Filter_Changed(object sender, SelectionChangedEventArgs e) => ApplyFilters();
@@ -78,12 +88,44 @@ namespace ElectronicsShop.Pages
 
         private void EditProduct_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Редактировать выбранный товар - функционал будет позже.");
+            if (_selectedProduct != null)
+            {
+                NavigationService.Navigate(new AddEditPage(_selectedProduct));
+            }
+        }
+        private void ProductList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (ProductList.SelectedItem is Product selectedProduct)
+            {
+                NavigationService.Navigate(new ProductDetailsPage(selectedProduct));
+            }
         }
 
         private void DeleteProduct_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Удалить выбранный товар - функционал будет позже.");
+            if (_selectedProduct != null)
+            {
+                var result = MessageBox.Show($"Вы уверены, что хотите удалить товар '{_selectedProduct.Name}'?",
+                                           "Подтверждение удаления",
+                                           MessageBoxButton.YesNo,
+                                           MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _context.Product.Remove(_selectedProduct);
+                        _context.SaveChanges();
+                        _products.Remove(_selectedProduct);
+                        ApplyFilters();
+                        MessageBox.Show("Товар успешно удален!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка при удалении товара: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
     }
 }

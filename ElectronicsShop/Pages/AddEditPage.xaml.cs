@@ -17,33 +17,23 @@ using System.Windows.Shapes;
 
 namespace ElectronicsShop.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для AddEditPage.xaml
-    /// </summary>
     public partial class AddEditPage : Page
     {
-        private Product _currentProduct = new Product();
-        private bool _isEdit = false;
+        private Product _currentProduct;
+        private bool _isEdit;
 
         public AddEditPage(Product selectedProduct = null)
         {
             InitializeComponent();
 
-            if (selectedProduct != null)
-            {
-                _currentProduct = selectedProduct;
-                _isEdit = true;
-                Title = "Редактирование товара";
-            }
-            else
-            {
-                Title = "Добавление товара";
-            }
+            _isEdit = selectedProduct != null;
+            _currentProduct = selectedProduct ?? new Product();
 
-            DataContext = _currentProduct;
+            Title = _isEdit ? "Редактирование товара" : "Добавление товара";
 
-            LoadComboBoxes();
-            UpdatePlaceholders();
+            LoadComboBoxes();       // 1. загружаем списки
+            FillFields();           // 2. заполняем значения
+            UpdatePlaceholders();   // 3. обновляем визуально
         }
 
         private void LoadComboBoxes()
@@ -54,13 +44,31 @@ namespace ElectronicsShop.Pages
                 {
                     CategoryComboBox.ItemsSource = context.Category.ToList();
                     BrandComboBox.ItemsSource = context.Brands.ToList();
-                    CountryComboBox.ItemsSource = context.Country.ToList();  
+                    CountryComboBox.ItemsSource = context.Country.ToList();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void FillFields()
+        {
+            if (_isEdit)
+            {
+                NameBox.Text = _currentProduct.Name;
+                DescriptBox.Text = _currentProduct.Descript;
+                PriceBox.Text = _currentProduct.Price.ToString();
+                StockQBox.Text = _currentProduct.StockQ.ToString();
+                ImageBox.Text = _currentProduct.Image;
+            }
+
+            // Эти строки должны быть ВНЕ условия _isEdit
+            // и обязательно после LoadComboBoxes()
+            CategoryComboBox.SelectedValue = _currentProduct.ID_Category;
+            BrandComboBox.SelectedValue = _currentProduct.ID_Brand;
+            CountryComboBox.SelectedValue = _currentProduct.ID_Country;
         }
 
         private void UpdatePlaceholders()
@@ -80,10 +88,9 @@ namespace ElectronicsShop.Pages
         private void ImageBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePlaceholders();
-            _currentProduct.Image = ImageBox.Text;
         }
 
-        private void NumberValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9,]+");
             e.Handled = regex.IsMatch(e.Text);
@@ -91,17 +98,16 @@ namespace ElectronicsShop.Pages
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // Обновляем значения продукта из полей ввода
+            // Обновляем значения
             _currentProduct.Name = NameBox.Text;
             _currentProduct.Descript = DescriptBox.Text;
+            _currentProduct.Image = ImageBox.Text;
 
             if (decimal.TryParse(PriceBox.Text, out decimal price))
                 _currentProduct.Price = price;
 
             if (int.TryParse(StockQBox.Text, out int stockQ))
                 _currentProduct.StockQ = stockQ;
-
-            _currentProduct.Image = ImageBox.Text;
 
             StringBuilder errors = new StringBuilder();
 
@@ -133,27 +139,47 @@ namespace ElectronicsShop.Pages
                 {
                     if (_isEdit)
                     {
-                        context.Entry(_currentProduct).State = System.Data.Entity.EntityState.Modified;
+                        var productInDb = context.Product.FirstOrDefault(p => p.ID_Product == _currentProduct.ID_Product);
+
+                        if (productInDb == null)
+                        {
+                            MessageBox.Show("Продукт не найден", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        // Обновление
+                        productInDb.Name = _currentProduct.Name;
+                        productInDb.Descript = _currentProduct.Descript;
+                        productInDb.Price = _currentProduct.Price;
+                        productInDb.StockQ = _currentProduct.StockQ;
+                        productInDb.Image = _currentProduct.Image;
+                        productInDb.ID_Category = (int)CategoryComboBox.SelectedValue;
+                        productInDb.ID_Brand = (int)BrandComboBox.SelectedValue;
+                        productInDb.ID_Country = (int)CountryComboBox.SelectedValue;
                     }
                     else
                     {
+                        _currentProduct.ID_Category = (int)CategoryComboBox.SelectedValue;
+                        _currentProduct.ID_Brand = (int)BrandComboBox.SelectedValue;
+                        _currentProduct.ID_Country = (int)CountryComboBox.SelectedValue;
+
                         context.Product.Add(_currentProduct);
                     }
 
                     context.SaveChanges();
-                    MessageBox.Show("Данные сохранены успешно!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Данные успешно сохранены!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                     NavigationService.Navigate(new AdminPage());
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при сохранении данных: {ex.InnerException?.Message ?? ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка при сохранении: {ex.InnerException?.Message ?? ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Вы уверены, что хотите отменить изменения?", "Подтверждение",
+            if (MessageBox.Show("Вы уверены, что хотите отменить изменения?", "Отмена",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 NavigationService.GoBack();

@@ -43,19 +43,31 @@
             <ComboBox x:Name="CategoryBox" Width="150" Height="30" DisplayMemberPath="Name"
                       SelectionChanged="Filter_Changed"/>
             <Button Content="Добавить" Width="80" Height="30" Click="AddProduct_Click" Background="#4CAF50" Foreground="White"/>
-            <Button Content="Редактировать" Width="100" Height="30" Click="EditProduct_Click" Background="#FFC107" Foreground="Black"/>
-            <Button Content="Удалить" Width="80" Height="30" Click="DeleteProduct_Click" Background="#F44336" Foreground="White"/>
+            <Button x:Name="EditProduct" Content="Редактировать" Width="100" Height="30" Click="EditProduct_Click" Background="#FFC107" Foreground="Black"/>
+            <Button x:Name="DeleteProduct" Content="Удалить" Width="80" Height="30" Click="DeleteProduct_Click" Background="#F44336" Foreground="White"/>
         </StackPanel>
 
         <!-- Карточки товаров -->
-        <ScrollViewer Grid.Row="1">
-            <ItemsControl x:Name="ProductList" ItemTemplate="{StaticResource ProductCardTemplate}">
-                <ItemsControl.ItemsPanel>
+        <ScrollViewer Grid.Row="1"
+              HorizontalScrollBarVisibility="Disabled"
+              VerticalScrollBarVisibility="Auto">
+            <ListBox x:Name="ProductList"
+         ItemTemplate="{StaticResource ProductCardTemplate}"
+         SelectionChanged="ProductList_SelectionChanged"
+         MouseDoubleClick="ProductList_MouseDoubleClick"
+         Background="Transparent"
+         BorderThickness="0"
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True"/>
+                        <WrapPanel IsItemsHost="True"
+                           Orientation="Horizontal"
+                           HorizontalAlignment="Center"
+                           />
                     </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                </ListBox.ItemsPanel>
+            </ListBox>
         </ScrollViewer>
 
         <!-- Кол-во товаров -->

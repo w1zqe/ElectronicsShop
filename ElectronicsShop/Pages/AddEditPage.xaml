@@ -73,7 +73,7 @@
 
                     <!-- Страна -->
                     <ComboBox x:Name="CountryComboBox" Margin="0,0,0,10" Height="35" FontSize="14" 
-                              DisplayMemberPath="Name" SelectedValuePath="ID_Country"
+                              DisplayMemberPath="NameC" SelectedValuePath="ID_Country"
                               SelectedValue="{Binding ID_Country}"/>
 
                     <!-- Изображение -->
