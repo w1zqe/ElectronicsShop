@@ -54,7 +54,7 @@ namespace ElectronicsShop.Pages
                 {
                     CategoryComboBox.ItemsSource = context.Category.ToList();
                     BrandComboBox.ItemsSource = context.Brands.ToList();
-                    CountryComboBox.ItemsSource = context.Country.ToList();
+                    CountryComboBox.ItemsSource = context.Country.ToList();  
                 }
             }
             catch (Exception ex)
