@@ -10,9 +10,17 @@ namespace ElectronicsShop.AppData
     {
         public static ElectronicsShopEntities model0db; // Замените YourDbContext на ваш класс контекста
         public static Users CurrentUser { get; set; }
+
+        // Добавляем метод для проверки роли
+        public static bool IsCurrentUserAdmin()
+        {
+            return CurrentUser?.Roles != null &&
+                   CurrentUser.Roles.RoleName.Equals("Администратор", StringComparison.OrdinalIgnoreCase);
+        }
+
         static AppConnect()
         {
-            model0db = new ElectronicsShopEntities(); // Инициализация при первом обращении
+            model0db = new ElectronicsShopEntities();
         }
     }
 }

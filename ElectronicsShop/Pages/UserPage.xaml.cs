@@ -1,6 +1,7 @@
 ﻿using ElectronicsShop.AppData;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,11 +23,40 @@ namespace ElectronicsShop.Pages
             _currentUser = CurrentUser;
             LoadData();
         }
+        public class StockToVisibilityConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value is int stockQ)
+                {
+                    bool isAvailable = stockQ > 0;
+
+                    // Если передан параметр "Inverse", инвертируем результат
+                    if (parameter is string param && param == "Inverse")
+                        isAvailable = !isAvailable;
+
+                    return isAvailable ? Visibility.Visible : Visibility.Collapsed;
+                }
+                return Visibility.Collapsed;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         private void AddToCart_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as Button)?.Tag is Product product)
             {
+                // Добавляем проверку наличия товара
+                if (product.StockQ <= 0)
+                {
+                    MessageBox.Show("Этот товар закончился на складе и недоступен для заказа.");
+                    return;
+                }
+
                 var existingItem = _context.Korzina.FirstOrDefault(k => k.ID_User == _currentUser.ID_User && k.ID_Product == product.ID_Product);
 
                 if (existingItem != null)
@@ -126,5 +156,6 @@ namespace ElectronicsShop.Pages
         {
             // Можно оставить пустым, если не используешь одиночный выбор
         }
+        
     }
 }

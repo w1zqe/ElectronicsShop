@@ -83,6 +83,7 @@
     <Compile Include="AppData\Country.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="AppData\Flag.cs" />
     <Compile Include="AppData\Korzina.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -185,6 +186,7 @@
     <Compile Include="Pages\RegisterPage.xaml.cs">
       <DependentUpon>RegisterPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\StockToVisibilityConverter.cs" />
     <Compile Include="Pages\UserPage.xaml.cs">
       <DependentUpon>UserPage.xaml</DependentUpon>
     </Compile>

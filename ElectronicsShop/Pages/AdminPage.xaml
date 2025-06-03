@@ -52,18 +52,18 @@
               HorizontalScrollBarVisibility="Disabled"
               VerticalScrollBarVisibility="Auto">
             <ListBox x:Name="ProductList"
-         ItemTemplate="{StaticResource ProductCardTemplate}"
-         SelectionChanged="ProductList_SelectionChanged"
-         MouseDoubleClick="ProductList_MouseDoubleClick"
-         Background="Transparent"
-         BorderThickness="0"
-         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+             ItemTemplate="{StaticResource ProductCardTemplate}"
+             SelectionChanged="ProductList_SelectionChanged"
+             MouseDoubleClick="ProductList_MouseDoubleClick"
+             Background="Transparent"
+             BorderThickness="0">
 
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True"
                            Orientation="Horizontal"
                            HorizontalAlignment="Center"
+                           Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}"
                            />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>

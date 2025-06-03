@@ -168,7 +168,7 @@ namespace ElectronicsShop.Pages
 
                     context.SaveChanges();
                     MessageBox.Show("Данные успешно сохранены!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                    NavigationService.Navigate(new AdminPage());
+                    NavigationService.Navigate(new AdminPage(AppConnect.CurrentUser));
                 }
             }
             catch (Exception ex)

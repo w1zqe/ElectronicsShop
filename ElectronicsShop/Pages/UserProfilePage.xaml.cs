@@ -1,18 +1,10 @@
 ﻿using ElectronicsShop.AppData;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ElectronicsShop.Pages
 {
@@ -20,11 +12,12 @@ namespace ElectronicsShop.Pages
     {
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private Users _currentUser;
+        private bool _isPasswordValid = true;
 
         public UserProfilePage(Users currentUser)
         {
             InitializeComponent();
-            _currentUser = _context.Users.FirstOrDefault(u => u.ID_User == currentUser.ID_User); // Загружаем пользователя из контекста
+            _currentUser = _context.Users.FirstOrDefault(u => u.ID_User == currentUser.ID_User);
             LoadUserData();
         }
 
@@ -39,6 +32,41 @@ namespace ElectronicsShop.Pages
             }
         }
 
+        private void UserNameBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!Regex.IsMatch(e.Text, @"^[а-яА-Яa-zA-Z]+$"))
+            {
+                e.Handled = true;
+                MessageBox.Show("Имя может содержать только буквы.");
+            }
+        }
+
+        private void PhoneBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!Regex.IsMatch(e.Text, @"^[0-9]+$"))
+            {
+                e.Handled = true;
+                MessageBox.Show("Телефон может содержать только цифры.");
+            }
+        }
+
+        private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidatePassword();
+        }
+
+        private bool ValidatePassword()
+        {
+            if (PasswordBox.Password.Length > 0 && PasswordBox.Password.Length < 8)
+            {
+                MessageBox.Show("Пароль должен содержать минимум 8 символов.");
+                _isPasswordValid = false;
+                return false;
+            }
+            _isPasswordValid = true;
+            return true;
+        }
+
         private void SaveChanges_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(UserNameBox.Text) ||
@@ -47,6 +75,11 @@ namespace ElectronicsShop.Pages
                 string.IsNullOrWhiteSpace(PhoneBox.Text))
             {
                 MessageBox.Show("Пожалуйста, заполните все поля.");
+                return;
+            }
+
+            if (!ValidatePassword())
+            {
                 return;
             }
 

@@ -23,6 +23,7 @@ namespace ElectronicsShop.Pages
     {
         // Контекст базы данных
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
+        public static int rol;
 
         public LoginPage()
         {
@@ -78,7 +79,10 @@ namespace ElectronicsShop.Pages
                     // Перенаправляем в зависимости от роли
                     if (user.Role_ID == 1) // Администратор
                     {
-                        NavigationService.Navigate(new AdminPage());
+                        rol = user.Role_ID;
+
+                        NavigationService.Navigate(new AdminPage(user));
+                        
                     }
                     else // Обычный пользователь
                     {

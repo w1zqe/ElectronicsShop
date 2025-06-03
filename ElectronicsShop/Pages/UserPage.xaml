@@ -10,6 +10,9 @@
       Background="#FFE6F2FF">
 
     <Page.Resources>
+        <!-- Конвертер для видимости -->
+        <local:StockToVisibilityConverter x:Key="StockToVisibilityConverter"/>
+
         <DataTemplate x:Key="ProductCardTemplate">
             <Border Width="200" Height="280" Margin="10" Background="White" CornerRadius="10"
                     BorderBrush="#3A7CA5" BorderThickness="1" Padding="10">
@@ -18,7 +21,16 @@
                     <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14" TextWrapping="Wrap" Margin="0,5,0,5"/>
                     <TextBlock Text="{Binding Price, StringFormat=Цена: {0:C}}" FontSize="13"/>
                     <TextBlock Text="{Binding StockQ, StringFormat=В наличии: {0} шт.}" FontSize="12" Foreground="Gray"/>
-                    <Button Content="В корзину" Height="30" Margin="0,10,0,0" Tag="{Binding}" Click="AddToCart_Click"/>
+
+                    <!-- Кнопка "В корзину" или сообщение о недоступности -->
+                    <StackPanel>
+                        <Button Content="В корзину" Height="30" Margin="0,10,0,0" 
+                                Tag="{Binding}" Click="AddToCart_Click"
+                                Visibility="{Binding StockQ, Converter={StaticResource StockToVisibilityConverter}}"/>
+                        <TextBlock Text="Недоступно к заказу" Foreground="Red" FontWeight="Bold" 
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"
+                                   Visibility="{Binding StockQ, Converter={StaticResource StockToVisibilityConverter}, ConverterParameter=Inverse}"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </DataTemplate>
@@ -66,7 +78,9 @@
                      BorderThickness="0">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True" Orientation="Horizontal" HorizontalAlignment="Center"/>
+                        <WrapPanel IsItemsHost="True"
+                                   Orientation="Horizontal"
+                                   Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}}"/>
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>

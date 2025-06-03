@@ -13,12 +13,14 @@ namespace ElectronicsShop.Pages
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private List<Product> _products;
         private Product _selectedProduct;
+        Flag flag;
 
-        public AdminPage()
+        public AdminPage(object currentUser)
         {
             InitializeComponent();
             LoadData();
             ProductList.SelectionChanged += ProductList_SelectionChanged;
+            if 
         }
 
         private void LoadData()

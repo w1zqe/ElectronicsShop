@@ -28,16 +28,15 @@
         <!-- Данные пользователя -->
         <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="205,0,113,0" >
             <TextBlock Text="Имя пользователя"/>
-            <TextBox x:Name="UserNameBox"/>
-
+            <TextBox x:Name="UserNameBox" PreviewTextInput="UserNameBox_PreviewTextInput"/>
             <TextBlock Text="Логин"/>
             <TextBox x:Name="LoginBox"/>
 
             <TextBlock Text="Пароль"/>
-            <PasswordBox x:Name="PasswordBox"/>
+            <PasswordBox x:Name="PasswordBox" LostFocus="PasswordBox_LostFocus"/>
 
             <TextBlock Text="Телефон"/>
-            <TextBox x:Name="PhoneBox"/>
+            <TextBox x:Name="PhoneBox" PreviewTextInput="PhoneBox_PreviewTextInput"/>
 
             <Button Content="Сохранить изменения"
                     Click="SaveChanges_Click"
