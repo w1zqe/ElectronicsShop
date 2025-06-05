@@ -11,6 +11,7 @@ namespace ElectronicsShop.AppData
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
 
     public partial class Product
     {
@@ -51,11 +52,13 @@ namespace ElectronicsShop.AppData
                 {
                     return "/Images/picture.jpg";
                 }
+
                 else
                 {
                     return "/Images/" + Image;
                 }
             }
         }
+
     }
 }

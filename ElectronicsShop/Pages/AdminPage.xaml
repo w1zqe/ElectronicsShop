@@ -38,7 +38,7 @@
 
         <!-- Верхнее меню -->
         <Menu Grid.Row="0" Background="#3A7CA5" Foreground="White" Height="30">
-            
+            <MenuItem Header="Экспорт" Click="ExportToCSV_Click"/>
             <MenuItem Header="Выход" Click="Logout_Click"/>
         </Menu>
 

@@ -75,7 +75,8 @@
                      ItemTemplate="{StaticResource ProductCardTemplate}"
                      MouseDoubleClick="ProductList_MouseDoubleClick"
                      Background="Transparent"
-                     BorderThickness="0">
+                     BorderThickness="0"
+                     SelectionMode="Single">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True"

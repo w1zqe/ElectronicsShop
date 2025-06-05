@@ -26,7 +26,7 @@ namespace ElectronicsShop.Pages
         {
             InitializeComponent();
             _product = product;
-            _currentUser = _context.Users.FirstOrDefault(u => u.ID_User == currentUser.ID_User);
+            _currentUser = currentUser; // Просто сохраняем переданного пользователя
             LoadProductData();
         }
 
@@ -52,7 +52,6 @@ namespace ElectronicsShop.Pages
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-
             NavigationService.Navigate(new UserPage(_currentUser));
         }
     }

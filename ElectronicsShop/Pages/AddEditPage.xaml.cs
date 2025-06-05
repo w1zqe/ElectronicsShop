@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using Microsoft.Win32;
 
 namespace ElectronicsShop.Pages
 {
@@ -22,6 +23,7 @@ namespace ElectronicsShop.Pages
     {
         private Product _currentProduct;
         private bool _isEdit;
+        private string _imagePath;
 
         public AddEditPage(Product selectedProduct = null)
         {
@@ -29,7 +31,6 @@ namespace ElectronicsShop.Pages
 
             _isEdit = selectedProduct != null;
             _currentProduct = selectedProduct ?? new Product();
-
             this.DataContext = _currentProduct;
 
             PageTitleTextBlock.Text = _isEdit ? "Редактирование товара" : "Добавление товара";
@@ -37,6 +38,25 @@ namespace ElectronicsShop.Pages
             LoadComboBoxes();       // 1. загружаем списки
             FillFields();           // 2. заполняем значения
             UpdatePlaceholders();   // 3. обновляем визуально
+
+            // 🟢 Устанавливаем путь к картинке при редактировании
+            if (_isEdit && !string.IsNullOrEmpty(_currentProduct.Image))
+            {
+                _imagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", _currentProduct.Image);
+
+                if (File.Exists(_imagePath))
+                {
+                    try
+                    {
+                        imgPreview.Source = new BitmapImage(new Uri(_imagePath));
+                        ImagePathTextBox.Text = _imagePath;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось загрузить изображение: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+            }
         }
 
         private List<Brands> _allBrands;
@@ -85,7 +105,7 @@ namespace ElectronicsShop.Pages
                 DescriptBox.Text = _currentProduct.Descript;
                 PriceBox.Text = _currentProduct.Price.ToString();
                 StockQBox.Text = _currentProduct.StockQ.ToString();
-                ImageBox.Text = _currentProduct.Image;
+                //ImageBox.Text = _currentProduct.Image;
             }
 
             // Сначала выбрать категорию
@@ -105,7 +125,7 @@ namespace ElectronicsShop.Pages
             DescriptPlaceholder.Visibility = string.IsNullOrEmpty(DescriptBox.Text) ? Visibility.Visible : Visibility.Collapsed;
             PricePlaceholder.Visibility = string.IsNullOrEmpty(PriceBox.Text) ? Visibility.Visible : Visibility.Collapsed;
             StockQPlaceholder.Visibility = string.IsNullOrEmpty(StockQBox.Text) ? Visibility.Visible : Visibility.Collapsed;
-            ImagePlaceholder.Visibility = string.IsNullOrEmpty(ImageBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+            //ImagePlaceholder.Visibility = string.IsNullOrEmpty(ImageBox.Text) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -123,27 +143,57 @@ namespace ElectronicsShop.Pages
             Regex regex = new Regex("[^0-9,]+");
             e.Handled = regex.IsMatch(e.Text);
         }
+        //private string ValidateImagePath(string imageName)
+        //{
+        //    if (string.IsNullOrWhiteSpace(imageName))
+        //        return "picture.jpg"; // Возвращаем только имя файла по умолчанию
+
+        //    // Извлекаем только имя файла (на случай, если ввели путь)
+        //    string fileName = System.IO.Path.GetFileName(imageName);
+
+        //    // Проверяем существование файла в папке Images
+        //    string imagesPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", fileName);
+
+        //    return File.Exists(imagesPath) ? fileName : "picture.jpg";
+        //}
+        //private string ValidateImagePath(string imagePath)
+        //{
+        //    AppFrame.EEEEE = imagePath;
+        //    MessageBox.Show(imagePath);
+        //    if (string.IsNullOrWhiteSpace(imagePath))
+        //        return "picture.jpg"; // Значение по умолчанию
+
+        //    return System.IO.Path.GetFileName(imagePath); // Только имя файла
+        //}
+        private string ValidateImagePath(string imagePath)
+        {
+            //AppFrame.EEEEE = imagePath;
+            //MessageBox.Show(imagePath);
+
+            if (string.IsNullOrWhiteSpace(imagePath))
+                return "picture.jpg"; // Заглушка по умолчанию
+
+            string fileName = System.IO.Path.GetFileName(imagePath);
+
+            // Если путь абсолютный и файл существует — используем его
+            if (File.Exists(imagePath))
+                return fileName;
+
+            // Если относительный, ищем в папке Images
+            string imageFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
+            string fullPath = System.IO.Path.Combine(imageFolder, fileName);
+
+            if (File.Exists(fullPath))
+                return fileName;
+
+            return "picture.jpg"; // Возвращаем заглушку, если файл не найден нигде
+        }
+
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // Обновляем значения
             _currentProduct.Name = NameBox.Text;
             _currentProduct.Descript = DescriptBox.Text;
-            // Проверка существования изображения
-            string imagesFolderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
-            string imageFilePath = System.IO.Path.Combine(imagesFolderPath, ImageBox.Text);
-
-            if (!File.Exists(imageFilePath))
-            {
-                // Если файл не найден — подставляем заглушку
-                _currentProduct.Image = "picture.jpg";
-            }
-            else
-            {
-                _currentProduct.Image = ImageBox.Text;
-            }
-
-            
 
             if (decimal.TryParse(PriceBox.Text, out decimal price))
                 _currentProduct.Price = price;
@@ -189,21 +239,26 @@ namespace ElectronicsShop.Pages
                             return;
                         }
 
-                        // Обновление
+                        // Обновление полей
                         productInDb.Name = _currentProduct.Name;
                         productInDb.Descript = _currentProduct.Descript;
                         productInDb.Price = _currentProduct.Price;
                         productInDb.StockQ = _currentProduct.StockQ;
-                        productInDb.Image = _currentProduct.Image;
                         productInDb.ID_Category = (int)CategoryComboBox.SelectedValue;
                         productInDb.ID_Brand = (int)BrandComboBox.SelectedValue;
                         productInDb.ID_Country = (int)CountryComboBox.SelectedValue;
+
+                        // 🟢 Обновить путь к фото
+                        productInDb.Image = ValidateImagePath(ImagePathTextBox.Text);
                     }
                     else
                     {
                         _currentProduct.ID_Category = (int)CategoryComboBox.SelectedValue;
                         _currentProduct.ID_Brand = (int)BrandComboBox.SelectedValue;
                         _currentProduct.ID_Country = (int)CountryComboBox.SelectedValue;
+
+                        // 🟢 Установить путь к фото
+                        _currentProduct.Image = ValidateImagePath(ImagePathTextBox.Text);
 
                         context.Product.Add(_currentProduct);
                     }
@@ -229,7 +284,29 @@ namespace ElectronicsShop.Pages
             { 7, new List<int> { 5, 6 } },            // Игровые консоли: Sony, LG (условно)
             { 8, new List<int> { 7, 8 } }             // Комплектующие: Asus, HP
         };
+        private void BtnSelectImage_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.jpg, *.jpeg, *.png)|*.jpg;*.jpeg;*.png",
+                Title = "Выберите изображение товара"
+            };
 
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    _imagePath = openFileDialog.FileName;
+                    ImagePathTextBox.Text = _imagePath; // Обновляем текстовое поле
+                    imgPreview.Source = new BitmapImage(new Uri(_imagePath));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка загрузки изображения: {ex.Message}",
+                                  "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {

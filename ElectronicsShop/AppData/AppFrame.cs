@@ -10,5 +10,6 @@ namespace ElectronicsShop.AppData
     internal class AppFrame
     {
         public static Frame frameMain;
+        public static string EEEEE;
     }
 }

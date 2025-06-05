@@ -1,7 +1,9 @@
 ﻿using ElectronicsShop.AppData;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -117,10 +119,18 @@ namespace ElectronicsShop.Pages
                 {
                     try
                     {
+                        // Удаляем товар из контекста
                         _context.Product.Remove(_selectedProduct);
 
+                        // Сохраняем изменения в БД
+                        _context.SaveChanges();
+
+                        // Удаляем товар из локального списка
                         _products.Remove(_selectedProduct);
+
+                        // Обновляем отображение
                         ApplyFilters();
+
                         MessageBox.Show("Товар успешно удален!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
@@ -130,8 +140,51 @@ namespace ElectronicsShop.Pages
                 }
             }
         }
-        
 
+        private void ExportToCSV_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var productsToExport = ProductList.ItemsSource as IEnumerable<Product> ?? _products;
+
+                SaveFileDialog saveDialog = new SaveFileDialog
+                {
+                    Filter = "CSV files (*.csv)|*.csv",
+                    FileName = $"Товары_{DateTime.Now:yyyyMMddHHmmss}.csv"
+                };
+
+                if (saveDialog.ShowDialog() == true)
+                {
+                    using (var writer = new System.IO.StreamWriter(saveDialog.FileName, false, Encoding.UTF8))
+                    {
+                        // Заголовки
+                        writer.WriteLine("ID;Название;Описание;Цена;Количество;Бренд;Категория;Страна");
+
+                        // Данные
+                        foreach (var product in productsToExport)
+                        {
+                            writer.WriteLine(
+                                $"{product.ID_Product};" +
+                                $"\"{product.Name}\";" +
+                                $"\"{product.Descript}\";" +
+                                $"{product.Price};" +
+                                $"{product.StockQ};" +
+                                $"\"{product.Brands?.Name}\";" +
+                                $"\"{product.Category?.Name}\";" +
+                                $"\"{product.Country?.NameC}\"");
+                        }
+                    }
+
+                    MessageBox.Show("Данные успешно экспортированы в CSV!", "Успех",
+                                  MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при экспорте в CSV: {ex.Message}", "Ошибка",
+                              MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new LoginPage());

@@ -79,14 +79,13 @@
                               SelectedValue="{Binding ID_Country}"/>
 
                     <!-- Изображение -->
-                    <Grid Margin="0,0,0,10">
-                        <TextBox x:Name="ImageBox" Height="35" FontSize="14" Padding="10,0" 
-                                 VerticalContentAlignment="Center" TextChanged="ImageBox_TextChanged"/>
-                        <TextBlock x:Name="ImagePlaceholder" Text="Имя файла изображения (например: product1.jpg)"
-                                   FontSize="14" Foreground="Gray"
-                                   Margin="10,0,0,0" VerticalAlignment="Center"
-                                   IsHitTestVisible="False" Visibility="Visible"/>
-                    </Grid>
+                    <StackPanel Grid.Row="8" Orientation="Horizontal" Margin="0,25,0,0">
+                        <TextBox x:Name="ImagePathTextBox" Margin="0,5" Width="300"/>
+                        <Image x:Name="imgPreview" Source="{Binding Image}" Width="100" Height="100" 
+                        Stretch="UniformToFill" Margin="0,0,10,0"/>
+                        <Button x:Name="btnSelectImage" Content="Выбрать изображение" Width="150" 
+                        Click="BtnSelectImage_Click" BorderBrush="Black" Foreground="#FFECC286" FontWeight="Bold" Background="#FF75425E" Height="35"/>
+                    </StackPanel>
 
                     <!-- Кнопка Сохранить -->
                     <Button Content="Сохранить" Height="35" Background="#3A7CA5"
