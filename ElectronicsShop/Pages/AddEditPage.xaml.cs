@@ -144,7 +144,7 @@ namespace ElectronicsShop.Pages
             e.Handled = regex.IsMatch(e.Text);
         }
         
-            
+             
         private string ValidateImagePath(string imagePath)
         {
             // Заглушка по умолчанию
