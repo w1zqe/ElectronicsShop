@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace ElectronicsShop.Pages
 {
@@ -29,12 +30,16 @@ namespace ElectronicsShop.Pages
             _isEdit = selectedProduct != null;
             _currentProduct = selectedProduct ?? new Product();
 
-            Title = _isEdit ? "Редактирование товара" : "Добавление товара";
+            this.DataContext = _currentProduct;
+
+            PageTitleTextBlock.Text = _isEdit ? "Редактирование товара" : "Добавление товара";
 
             LoadComboBoxes();       // 1. загружаем списки
             FillFields();           // 2. заполняем значения
             UpdatePlaceholders();   // 3. обновляем визуально
         }
+
+        private List<Brands> _allBrands;
 
         private void LoadComboBoxes()
         {
@@ -43,13 +48,32 @@ namespace ElectronicsShop.Pages
                 using (var context = new ElectronicsShopEntities())
                 {
                     CategoryComboBox.ItemsSource = context.Category.ToList();
-                    BrandComboBox.ItemsSource = context.Brands.ToList();
+                    _allBrands = context.Brands.ToList();
                     CountryComboBox.ItemsSource = context.Country.ToList();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CategoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CategoryComboBox.SelectedValue is int selectedCategoryId)
+            {
+                if (_categoryBrandMap.TryGetValue(selectedCategoryId, out var brandIds))
+                {
+                    var filteredBrands = _allBrands.Where(b => brandIds.Contains(b.ID_Brand)).ToList();
+                    BrandComboBox.ItemsSource = filteredBrands;
+
+                    // если текущий бренд больше не доступен — сбросить выбор
+                    if (BrandComboBox.SelectedValue is int selectedBrandId &&
+                        !brandIds.Contains(selectedBrandId))
+                    {
+                        BrandComboBox.SelectedItem = null;
+                    }
+                }
             }
         }
 
@@ -64,12 +88,16 @@ namespace ElectronicsShop.Pages
                 ImageBox.Text = _currentProduct.Image;
             }
 
-            // Эти строки должны быть ВНЕ условия _isEdit
-            // и обязательно после LoadComboBoxes()
+            // Сначала выбрать категорию
             CategoryComboBox.SelectedValue = _currentProduct.ID_Category;
+
+            // Обновить список брендов под эту категорию
+            CategoryComboBox_SelectionChanged(null, null);
+
             BrandComboBox.SelectedValue = _currentProduct.ID_Brand;
             CountryComboBox.SelectedValue = _currentProduct.ID_Country;
         }
+
 
         private void UpdatePlaceholders()
         {
@@ -101,7 +129,21 @@ namespace ElectronicsShop.Pages
             // Обновляем значения
             _currentProduct.Name = NameBox.Text;
             _currentProduct.Descript = DescriptBox.Text;
-            _currentProduct.Image = ImageBox.Text;
+            // Проверка существования изображения
+            string imagesFolderPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
+            string imageFilePath = System.IO.Path.Combine(imagesFolderPath, ImageBox.Text);
+
+            if (!File.Exists(imageFilePath))
+            {
+                // Если файл не найден — подставляем заглушку
+                _currentProduct.Image = "picture.jpg";
+            }
+            else
+            {
+                _currentProduct.Image = ImageBox.Text;
+            }
+
+            
 
             if (decimal.TryParse(PriceBox.Text, out decimal price))
                 _currentProduct.Price = price;
@@ -176,6 +218,18 @@ namespace ElectronicsShop.Pages
                 MessageBox.Show($"Ошибка при сохранении: {ex.InnerException?.Message ?? ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private Dictionary<int, List<int>> _categoryBrandMap = new Dictionary<int, List<int>>
+        {
+            { 1, new List<int> { 1, 2, 3, 4 } },      // Смартфоны: Apple, Samsung, Xiaomi, Huawei
+            { 2, new List<int> { 1, 7, 8 } },         // Ноутбуки: Apple, Asus, HP
+            { 3, new List<int> { 5, 6 } },            // Телевизоры: Sony, LG
+            { 4, new List<int> { 1, 3, 4, 5 } },      // Наушники: Apple, Xiaomi, Huawei, Sony
+            { 5, new List<int> { 1, 2, 3, 4 } },      // Планшеты: Apple, Samsung, Xiaomi, Huawei
+            { 6, new List<int> { 5 } },              // Фотоаппараты: Sony
+            { 7, new List<int> { 5, 6 } },            // Игровые консоли: Sony, LG (условно)
+            { 8, new List<int> { 7, 8 } }             // Комплектующие: Asus, HP
+        };
+
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {

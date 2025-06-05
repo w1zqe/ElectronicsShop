@@ -127,9 +127,10 @@ namespace ElectronicsShop.Pages
 
         private void ProductList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            var currentUser = AppConnect.CurrentUser as Users;
             if (ProductList.SelectedItem is Product selectedProduct)
             {
-                NavigationService.Navigate(new ProductDetailsPage(selectedProduct));
+                NavigationService.Navigate(new ProductDetailsPage(selectedProduct, currentUser));
             }
         }
         private void Cart_Click(object sender, RoutedEventArgs e)

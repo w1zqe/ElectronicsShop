@@ -16,17 +16,20 @@ using System.Windows.Shapes;
 
 namespace ElectronicsShop.Pages
 {
-    public partial class ProductDetailsPage : Page
+    /// <summary>
+    /// Логика взаимодействия для ProductDetailsAdminPage.xaml
+    /// </summary>
+    public partial class ProductDetailsAdminPage : Page
     {
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private Product _product;
         private Users _currentUser;
 
-        public ProductDetailsPage(Product product, Users currentUser)
+        public ProductDetailsAdminPage(Product product, Users currentUser)
         {
             InitializeComponent();
             _product = product;
-            _currentUser = _context.Users.FirstOrDefault(u => u.ID_User == currentUser.ID_User);
+            
             LoadProductData();
         }
 
@@ -53,7 +56,7 @@ namespace ElectronicsShop.Pages
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
 
-            NavigationService.Navigate(new UserPage(_currentUser));
+            NavigationService.Navigate(new AdminPage(_currentUser));
         }
     }
 }

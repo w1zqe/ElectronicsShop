@@ -15,8 +15,9 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- Заголовок -->
-                    <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold"
-                               Foreground="#2C5364" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                    <TextBlock x:Name="PageTitleTextBlock" Text="Заголовок"
+                                    FontSize="24" FontWeight="Bold"
+                                     Foreground="#2C5364" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
                     <!-- Название товара -->
                     <Grid Margin="0,0,0,10">
@@ -62,9 +63,10 @@
                     </Grid>
 
                     <!-- Категория -->
-                    <ComboBox x:Name="CategoryComboBox" Margin="0,0,0,10" Height="35" FontSize="14" 
-                              DisplayMemberPath="Name" SelectedValuePath="ID_Category"
-                              SelectedValue="{Binding ID_Category}"/>
+                    <ComboBox x:Name="CategoryComboBox"
+                    Margin="0,0,0,10" Height="35" FontSize="14" 
+                    DisplayMemberPath="Name" SelectedValuePath="ID_Category"
+                    SelectionChanged="CategoryComboBox_SelectionChanged"/>
 
                     <!-- Бренд -->
                     <ComboBox x:Name="BrandComboBox" Margin="0,0,0,10" Height="35" FontSize="14" 

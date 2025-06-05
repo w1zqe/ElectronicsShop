@@ -21,6 +21,7 @@ namespace ElectronicsShop.Pages
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private Users _currentUser;
         private List<Korzina> _cartItems;
+        
 
         public CartPage(Users currentUser)
         {
@@ -48,12 +49,20 @@ namespace ElectronicsShop.Pages
 
         private void IncreaseQuantity_Click(object sender, RoutedEventArgs e)
         {
-            if ((sender as Button)?.Tag is Korzina item)
-            {
-                item.Quantity++;
-                _context.SaveChanges();
-                LoadCart();
-            }
+                if ((sender as Button)?.Tag is Korzina item)
+                {
+                var product = _context.Product.FirstOrDefault(p => p.ID_Product == item.ID_Product);
+                if (product != null && item.Quantity < product.StockQ)
+                {
+                    item.Quantity++;
+                    _context.SaveChanges();
+                    LoadCart();
+                }
+                else
+                {
+                    MessageBox.Show($"Достигнуто максимальное доступное количество. На складе: {product.StockQ} шт.");
+                }
+                }
         }
 
         private void DecreaseQuantity_Click(object sender, RoutedEventArgs e)

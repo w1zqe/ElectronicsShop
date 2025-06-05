@@ -13,14 +13,14 @@ namespace ElectronicsShop.Pages
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private List<Product> _products;
         private Product _selectedProduct;
-        Flag flag;
+        
 
         public AdminPage(object currentUser)
         {
             InitializeComponent();
             LoadData();
             ProductList.SelectionChanged += ProductList_SelectionChanged;
-            if 
+            
         }
 
         private void LoadData()
@@ -97,9 +97,10 @@ namespace ElectronicsShop.Pages
         }
         private void ProductList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            var currentUser = AppConnect.CurrentUser as Users;
             if (ProductList.SelectedItem is Product selectedProduct)
             {
-                NavigationService.Navigate(new ProductDetailsPage(selectedProduct));
+                NavigationService.Navigate(new ProductDetailsAdminPage(selectedProduct, currentUser));
             }
         }
 
@@ -117,7 +118,7 @@ namespace ElectronicsShop.Pages
                     try
                     {
                         _context.Product.Remove(_selectedProduct);
-                        _context.SaveChanges();
+
                         _products.Remove(_selectedProduct);
                         ApplyFilters();
                         MessageBox.Show("Товар успешно удален!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -128,6 +129,12 @@ namespace ElectronicsShop.Pages
                     }
                 }
             }
+        }
+        
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new LoginPage());
         }
     }
 }
