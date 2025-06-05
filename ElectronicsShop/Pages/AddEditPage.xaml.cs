@@ -143,50 +143,31 @@ namespace ElectronicsShop.Pages
             Regex regex = new Regex("[^0-9,]+");
             e.Handled = regex.IsMatch(e.Text);
         }
-        //private string ValidateImagePath(string imageName)
-        //{
-        //    if (string.IsNullOrWhiteSpace(imageName))
-        //        return "picture.jpg"; // Возвращаем только имя файла по умолчанию
+        
 
-        //    // Извлекаем только имя файла (на случай, если ввели путь)
-        //    string fileName = System.IO.Path.GetFileName(imageName);
-
-        //    // Проверяем существование файла в папке Images
-        //    string imagesPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", fileName);
-
-        //    return File.Exists(imagesPath) ? fileName : "picture.jpg";
-        //}
-        //private string ValidateImagePath(string imagePath)
-        //{
-        //    AppFrame.EEEEE = imagePath;
-        //    MessageBox.Show(imagePath);
-        //    if (string.IsNullOrWhiteSpace(imagePath))
-        //        return "picture.jpg"; // Значение по умолчанию
-
-        //    return System.IO.Path.GetFileName(imagePath); // Только имя файла
-        //}
         private string ValidateImagePath(string imagePath)
         {
-            //AppFrame.EEEEE = imagePath;
-            //MessageBox.Show(imagePath);
+            // Заглушка по умолчанию
+            string defaultImage = "picture.jpg";
 
+            // Проверка на null или пустую строку
             if (string.IsNullOrWhiteSpace(imagePath))
-                return "picture.jpg"; // Заглушка по умолчанию
+                return defaultImage;
 
+            // Получаем только имя файла
             string fileName = System.IO.Path.GetFileName(imagePath);
 
-            // Если путь абсолютный и файл существует — используем его
-            if (File.Exists(imagePath))
-                return fileName;
+            // Путь до папки с изображениями (зависит от твоего проекта — укажи свой путь)
+            string imagesDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
 
-            // Если относительный, ищем в папке Images
-            string imageFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
-            string fullPath = System.IO.Path.Combine(imageFolder, fileName);
+            // Полный путь до файла
+            string fullPath = System.IO.Path.Combine(imagesDirectory, fileName);
 
-            if (File.Exists(fullPath))
-                return fileName;
+            // Проверка на существование файла
+            if (!System.IO.File.Exists(fullPath))
+                return defaultImage;
 
-            return "picture.jpg"; // Возвращаем заглушку, если файл не найден нигде
+            return fileName;
         }
 
 
