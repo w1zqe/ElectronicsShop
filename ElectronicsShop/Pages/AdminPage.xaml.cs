@@ -15,11 +15,13 @@ namespace ElectronicsShop.Pages
         private ElectronicsShopEntities _context = new ElectronicsShopEntities();
         private List<Product> _products;
         private Product _selectedProduct;
-        
+        private Users _currentUser;
+
 
         public AdminPage(object currentUser)
         {
             InitializeComponent();
+            
             LoadData();
             ProductList.SelectionChanged += ProductList_SelectionChanged;
             
@@ -189,5 +191,6 @@ namespace ElectronicsShop.Pages
         {
             NavigationService.Navigate(new LoginPage());
         }
+       
     }
 }

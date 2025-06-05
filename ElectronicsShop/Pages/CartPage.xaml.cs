@@ -39,7 +39,7 @@ namespace ElectronicsShop.Pages
             CartItemsList.ItemsSource = _cartItems;
 
             decimal total = _cartItems.Sum(i => i.Product.Price * i.Quantity);
-            TotalPriceText.Text = $"Итого: {total:C}";
+            TotalPriceText.Text = $"Итого: ${total:F2}";
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

@@ -20,7 +20,7 @@
                 <!-- Логин -->
                 <Grid Margin="0,0,0,10">
                     <TextBox x:Name="LoginBox" Height="35" FontSize="14" Padding="10,0" 
-                             VerticalContentAlignment="Center" TextChanged="LoginBox_TextChanged"/>
+                             VerticalContentAlignment="Center" TextChanged="LoginBox_TextChanged" KeyDown="InputFields_KeyDown"/>
                     <TextBlock x:Name="LoginPlaceholder" Text="Логин"
                                FontSize="14" Foreground="Gray"
                                Margin="10,0,0,0" VerticalAlignment="Center"
@@ -31,7 +31,7 @@
                 <Grid Margin="0,0,0,20">
                     <PasswordBox x:Name="PasswordBox" Height="35" FontSize="14"
                                  Padding="10,0" VerticalContentAlignment="Center" 
-                                 PasswordChanged="PasswordBox_PasswordChanged"/>
+                                 PasswordChanged="PasswordBox_PasswordChanged" KeyDown="InputFields_KeyDown"/>
                     <TextBlock x:Name="PasswordPlaceholder" Text="Пароль"
                                FontSize="14" Foreground="Gray"
                                Margin="10,0,0,0" VerticalAlignment="Center"
@@ -55,5 +55,7 @@
                            Visibility="Collapsed"/>
             </StackPanel>
         </Border>
+        <Image x:Name="imgQr" HorizontalAlignment="Left" Height="100" Margin="664,37,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button x:Name="Btn_qrcode" Content="QR-коде" HorizontalAlignment="Left" Margin="692,155,0,0" VerticalAlignment="Top" Click="Btn_qrcode_Click" Foreground="#FFECC286" Background="#FF75425E" BorderBrush="Black"/>
     </Grid>
 </Page>

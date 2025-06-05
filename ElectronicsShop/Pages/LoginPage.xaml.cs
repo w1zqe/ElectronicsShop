@@ -1,7 +1,9 @@
 ﻿using ElectronicsShop.AppData;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZXing;
+using System.Drawing;
 
 namespace ElectronicsShop.Pages
 {
@@ -111,6 +115,40 @@ namespace ElectronicsShop.Pages
             // Отображение сообщения об ошибке
             ErrorMessage.Text = message;
             ErrorMessage.Visibility = Visibility.Visible;
+        }
+        private void InputFields_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                LoginButton_Click(null, null);
+            }
+        }
+
+
+        private void Btn_qrcode_Click(object sender, RoutedEventArgs e)
+        {
+            var writer = new BarcodeWriter
+            {
+                Format = BarcodeFormat.QR_CODE,
+                Options = new ZXing.Common.EncodingOptions
+                {
+                    Width = 300,
+                    Height = 300
+                }
+            };
+            var result = writer.Write(@"https://t.me/nn6le9niy");
+            var bitmap = new BitmapImage();
+            using (var memoryStream = new MemoryStream())
+            {
+                result.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+                memoryStream.Position = 0;
+                bitmap.BeginInit();
+                bitmap.StreamSource = memoryStream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+            }
+            imgQr.Source = bitmap;
         }
     }
 }
