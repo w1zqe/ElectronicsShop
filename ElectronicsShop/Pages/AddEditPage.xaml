@@ -84,7 +84,7 @@
                         <Image x:Name="imgPreview" Source="{Binding Image}" Width="100" Height="100" 
                         Stretch="UniformToFill" Margin="0,0,10,0"/>
                         <Button x:Name="btnSelectImage" Content="Выбрать изображение" Width="150" 
-                        Click="BtnSelectImage_Click" BorderBrush="Black" Foreground="#FFECC286" FontWeight="Bold" Background="#FF75425E" Height="35"/>
+                        Click="BtnSelectImage_Click" BorderBrush="Black" FontWeight="Bold" Height="35" Background="#3A7CA5" Foreground="White"/>
                     </StackPanel>
 
                     <!-- Кнопка Сохранить -->

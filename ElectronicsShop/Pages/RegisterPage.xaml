@@ -16,16 +16,18 @@
                 <TextBlock Text="Регистрация" FontSize="24" FontWeight="Bold"
                            Foreground="#2C5364" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
+                
                 <!-- Имя пользователя -->
                 <Grid Margin="0,0,0,10">
                     <TextBox x:Name="UserNameBox" Height="35" FontSize="14" Padding="10,0" 
-                             VerticalContentAlignment="Center"
-                             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"
-                             TextChanged="TextBox_TextChanged"/>
+             VerticalContentAlignment="Center"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"
+             TextChanged="TextBox_TextChanged"
+             PreviewTextInput="UserNameBox_PreviewTextInput"/>
                     <TextBlock x:Name="UserNameBoxPlaceholder" Text="ФИО"
-                               FontSize="14" Foreground="Gray"
-                               Margin="10,0,0,0" VerticalAlignment="Center"
-                               IsHitTestVisible="False"/>
+               FontSize="14" Foreground="Gray"
+               Margin="10,0,0,0" VerticalAlignment="Center"
+               IsHitTestVisible="False"/>
                 </Grid>
 
                 <!-- Логин -->
@@ -67,13 +69,14 @@
                 <!-- Телефон -->
                 <Grid Margin="0,0,0,20">
                     <TextBox x:Name="PhoneBox" Height="35" FontSize="14" Padding="10,0" 
-                             VerticalContentAlignment="Center"
-                             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"
-                             TextChanged="TextBox_TextChanged"/>
+             VerticalContentAlignment="Center"
+             GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"
+             TextChanged="TextBox_TextChanged"
+             PreviewTextInput="PhoneBox_PreviewTextInput"/>
                     <TextBlock x:Name="PhoneBoxPlaceholder" Text="Телефон"
-                               FontSize="14" Foreground="Gray"
-                               Margin="10,0,0,0" VerticalAlignment="Center"
-                               IsHitTestVisible="False"/>
+               FontSize="14" Foreground="Gray"
+               Margin="10,0,0,0" VerticalAlignment="Center"
+               IsHitTestVisible="False"/>
                 </Grid>
 
                 <Button Content="Зарегистрироваться" Height="35" Background="#3A7CA5"

@@ -38,7 +38,7 @@
 
         <!-- Верхнее меню -->
         <Menu Grid.Row="0" Background="#3A7CA5" Foreground="White" Height="30">
-            
+            <MenuItem Header="Заказы" Click="ViewOrders_Click"/>
             <MenuItem Header="Экспорт" Click="ExportToCSV_Click"/>
             <MenuItem Header="Выход" Click="Logout_Click"/>
         </Menu>
@@ -54,9 +54,9 @@
             </ComboBox>
             <ComboBox x:Name="CategoryBox" Width="150" Height="30" DisplayMemberPath="Name"
                       SelectionChanged="Filter_Changed"/>
-            <Button Content="Добавить" Width="80" Height="30" Click="AddProduct_Click" Background="#4CAF50" Foreground="White"/>
+            <Button Content="Добавить" Width="80" Height="30" Click="AddProduct_Click" Background="#4CAF50" Foreground="Black"/>
             <Button x:Name="EditProduct" Content="Редактировать" Width="100" Height="30" Click="EditProduct_Click" Background="#FFC107" Foreground="Black"/>
-            <Button x:Name="DeleteProduct" Content="Удалить" Width="80" Height="30" Click="DeleteProduct_Click" Background="#F44336" Foreground="White"/>
+            <Button x:Name="DeleteProduct" Content="Удалить" Width="80" Height="30" Click="DeleteProduct_Click" Background="#F44336" Foreground="Black"/>
         </StackPanel>
 
         <!-- Карточки товаров -->

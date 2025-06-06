@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ElectronicsShop"
         mc:Ignorable="d"
-        Title="ElectronicsShop" MinHeight="500" MinWidth="720">
+        Title="Магазин электроники" MinHeight="500" MinWidth="800">
     <Grid>
         <Frame x:Name="frameMain" Content="" NavigationUIVisibility="Hidden"/>
 

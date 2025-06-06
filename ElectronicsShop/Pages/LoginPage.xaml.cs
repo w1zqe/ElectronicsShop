@@ -150,5 +150,7 @@ namespace ElectronicsShop.Pages
             }
             imgQr.Source = bitmap;
         }
+
+        
     }
 }

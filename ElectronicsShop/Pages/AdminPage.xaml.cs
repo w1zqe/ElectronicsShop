@@ -191,6 +191,10 @@ namespace ElectronicsShop.Pages
         {
             NavigationService.Navigate(new LoginPage());
         }
-       
+
+        private void ViewOrders_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new OrdersAdminPage());
+        }
     }
 }

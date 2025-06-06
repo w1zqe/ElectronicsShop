@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Navigation;
 
 namespace ElectronicsShop.Pages
@@ -86,7 +87,31 @@ namespace ElectronicsShop.Pages
             }
             ErrorMessage.Visibility = Visibility.Collapsed;
         }
+        private void UserNameBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Разрешаем только буквы, пробелы и дефисы (для двойных фамилий)
+            if (!Regex.IsMatch(e.Text, @"^[\p{L}\s-]+$"))
+            {
+                e.Handled = true;
+            }
+        }
 
+        // Ограничение ввода только цифр для телефона
+        private void PhoneBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Разрешаем только цифры и знак + (в начале номера)
+            if (!Regex.IsMatch(e.Text, @"^[0-9\+]+$"))
+            {
+                e.Handled = true;
+            }
+
+            // Если ввод начинается с +, разрешаем только если это начало текста
+            var textBox = sender as TextBox;
+            if (e.Text == "+" && textBox != null && textBox.Text.Length > 0)
+            {
+                e.Handled = true;
+            }
+        }
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             string fullName = UserNameBox.Text.Trim();
@@ -101,6 +126,12 @@ namespace ElectronicsShop.Pages
                 string.IsNullOrEmpty(phone))
             {
                 ShowErrorMessage("Заполните все поля.");
+                return;
+            }
+
+            if (password.Length < 8)
+            {
+                ShowErrorMessage("Пароль должен содержать не менее 8 символов.");
                 return;
             }
 
